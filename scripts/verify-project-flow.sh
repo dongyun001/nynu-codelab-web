@@ -43,7 +43,7 @@ get_code() {
 info "1. 管理员登录"
 ADMIN_RESP=$(curl -s -X POST "${BASE_URL}/api/auth/login" \
   -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}')
+  -d "{\"username\":\"${ADMIN_USERNAME:-admin}\",\"password\":\"${ADMIN_PASSWORD:-admin123}\"}")
 ADMIN_TOKEN=$(extract_token "$ADMIN_RESP")
 if [ -z "$ADMIN_TOKEN" ]; then
   fail "管理员登录" "响应: $ADMIN_RESP"

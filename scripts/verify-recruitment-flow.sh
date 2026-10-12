@@ -64,7 +64,8 @@ check_code "$HEALTH" "200" "GET /api/health"
 echo ""
 echo "--- 2. 注册普通用户 ---"
 TEST_USER="verify_$(date +%s)"
-TEST_PASS="Verify@123"
+# 临时验证用户的密码（可用 TEST_USER_PASSWORD 覆盖）
+TEST_PASS="${TEST_USER_PASSWORD:-Verify@123}"
 REGISTER=$(curl -s -X POST "$BASE_URL/api/auth/register" \
     -H "Content-Type: application/json" \
     -d "{\"username\":\"$TEST_USER\",\"password\":\"$TEST_PASS\",\"confirmPassword\":\"$TEST_PASS\",\"realName\":\"验证用户\",\"phone\":\"1390000$(printf '%04d' $((RANDOM % 10000)))\",\"grade\":\"2024\",\"major\":\"计算机科学与技术\",\"className\":\"计科2401\"}")
@@ -125,7 +126,7 @@ echo ""
 echo "--- 8. 管理员登录 ---"
 ADMIN_LOGIN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
     -H "Content-Type: application/json" \
-    -d '{"username":"admin","password":"admin123"}')
+    -d "{\"username\":\"${ADMIN_USERNAME:-admin}\",\"password\":\"${ADMIN_PASSWORD:-admin123}\"}")
 check_code "$ADMIN_LOGIN" "200" "POST /api/auth/login (admin)"
 ADMIN_TOKEN=$(extract_token "$ADMIN_LOGIN")
 if [ -z "$ADMIN_TOKEN" ]; then

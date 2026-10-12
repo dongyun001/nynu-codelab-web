@@ -80,7 +80,7 @@ echo ""
 echo "--- 2. 管理员登录 ---"
 ADMIN_LOGIN=$(curl -s -X POST "$BASE_URL/api/auth/login" \
     -H "Content-Type: application/json" \
-    -d '{"username":"admin","password":"admin123"}')
+    -d "{\"username\":\"${ADMIN_USERNAME:-admin}\",\"password\":\"${ADMIN_PASSWORD:-admin123}\"}")
 check_code "$ADMIN_LOGIN" "200" "管理员登录"
 ADMIN_TOKEN=$(extract_token "$ADMIN_LOGIN")
 if [ -z "$ADMIN_TOKEN" ]; then
@@ -246,7 +246,8 @@ echo "--- 17. 权限隔离验证 ---"
 
 # 注册普通用户
 TEST_USER="verify_article_$(date +%s)"
-TEST_PASS="Verify@123"
+# 临时验证用户的密码（可用 TEST_USER_PASSWORD 覆盖）
+TEST_PASS="${TEST_USER_PASSWORD:-Verify@123}"
 REGISTER=$(curl -s -X POST "$BASE_URL/api/auth/register" \
     -H "Content-Type: application/json" \
     -d "{\"username\":\"$TEST_USER\",\"password\":\"$TEST_PASS\",\"confirmPassword\":\"$TEST_PASS\",\"realName\":\"文章测试用户\",\"phone\":\"139$(printf '%08d' $((RANDOM % 100000000)))\",\"grade\":\"2024\",\"major\":\"计算机科学与技术\",\"className\":\"计科2401\"}")
